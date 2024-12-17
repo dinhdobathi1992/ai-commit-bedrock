@@ -6,92 +6,96 @@
 [View Demo](https://youtu.be/7cVU3BuNpok)
 
 
-# ai-commit
+# AI Commit
 
-> No more headaches with commit messages.
+AI Commit is a Python tool that helps you write better Git commit messages using AI. It uses the Bedrock Claude 3 model through LiteLLM proxy to generate conventional commit messages based on your code changes.
 
-AI-Commit is a command line tool that uses OpenAI's ChatGPT model to generate commit messages for your Git repositories. As a result, you can write meaningful commit messages without having to think about them.
+## Features
 
-## Prerequisites
+- 🤖 AI-powered commit message generation
+- 📝 Follows conventional commit format
+- 🔄 Interactive mode for reviewing and editing messages
+- 🚀 Automatic staging, committing, and pushing
+- 🏷️ Automatic tag creation
+- 🎨 Colorful terminal output
 
-To use AI-Commit, you need to obtain an API key from OpenAI and set it as the value of the `OPENAI_API_KEY` environment variable.
+## Installation
 
-```
-export OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-Sometime, the ChatGPT's response is not good (too long, too short, not meaningful). In that case, you can try custom the system prompt by set the `AI_COMMIT_SYSTEM_PROMPT` environment variable:
-
-```
-export AI_COMMIT_SYSTEM_PROMPT="You are a GitCommitGPT-4, You will help user to write commit message, commit message should be short (less than 100 chars), clean and meaningful. Only response the message."
-```
-
-By default, ai-commit use model `gpt-3.5-turbo`. You can change it by set the `AI_COMMIT_MODEL` environment variable:
-
-```
-export AI_COMMIT_MODEL="gpt-3.5-turbo"
-```
-
-Note: Using AI-Commit will result in charges from OpenAI for API usage, so be sure to understand their pricing model before use.
-
-## Install
-
-There are two ways to install AI-Commit:
-
-### Use go
-
+1. Clone the repository:
 ```bash
-go install github.com/nguyenvanduocit/ai-commit@latest
+git clone https://github.com/yourusername/ai-commit-bedrock.git
+cd ai-commit-bedrock
 ```
 
-### Prebuilt binaries
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-You can download prebuilt binaries for Linux, macOS, and Windows from the [releases page](https://github.com/nguyenvanduocit/ai-commit/releases)
+3. Set up your environment variables:
+```bash
+export LITELLM_API_KEY=your_api_key
+```
+
+Optional environment variables:
+- `AI_COMMIT_MODEL`: Change the AI model (default: bedrock/anthropic.claude-3-sonnet-20240229-v1:0)
+- `AI_COMMIT_SYSTEM_PROMPT`: Customize the system prompt for commit message generation
 
 ## Usage
 
-1. Stage the changes you want to commit in Git.
-2. Run `ai-commit` command.
-3. The tool will generate a commit message and print it to the console.
-4. Now you can chat with the AI to adjust the commit message. Press ctrl + c to stop.
-5. Finally, select the type of commit.
-
-### Auto commit, no interaction
-
-When use `-a` flag, ai-commit will auto stage all changes then commit with generated message.
-
+Basic usage:
 ```bash
-ai-commit -a
+python main.py
 ```
 
-### Auto tag
+Options:
+- `-h, --help`: Show help message
+- `-a, --auto-commit`: Automatically stage and commit changes
+- `-t, --auto-tag`: Automatically create a tag
+- `-p, --auto-push`: Automatically push changes
 
-When use `-t` flag, ai-commit will auto create tag based on the commit messages between the last tag and the HEAD.
-
+Example with all options:
 ```bash
-ai-commit -t
+python main.py -a -t -p
 ```
 
-### Auto push
+## Building Executable
 
-When use `-p` flag, ai-commit will auto push to remote.
+To create a standalone executable:
 
 ```bash
-ai-commit -p
+pip install pyinstaller
+pyinstaller --onefile main.py --name ai-commit
 ```
 
-## Todo
+The executable will be created in the `dist` directory. You can then move it to your PATH:
+```bash
+sudo mv dist/ai-commit /usr/local/bin/
+```
 
-- [ ] Auto split changes in to multiple commits.
-- [x] Detect commit type.
-- [x] Auto tags?
+## Commit Message Format
+
+The tool generates commit messages following the conventional commit format:
+```
+<type>(<scope>): <description>
+```
+
+Types:
+- feat: New feature
+- fix: Bug fix
+- docs: Documentation changes
+- style: Code style changes
+- refactor: Code refactoring
+- test: Adding or modifying tests
+- chore: Maintenance tasks
+- perf: Performance improvements
 
 ## License
 
-AI-Commit is released under the MIT license. See LICENSE for more information.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
-Contributions are welcome! Please read the [contribution guidelines](CONTRIBUTING.md) first.
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 [![update](./stuff/vhs.gif)](https://twitter.com/duocdev)
