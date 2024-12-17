@@ -7,6 +7,7 @@ from typing import List, Optional, Tuple
 from dotenv import load_dotenv
 from client import LiteLLMClient, Message
 from colorama import Fore, Style, init
+from config import load_config
 
 # Initialize colorama
 init()
@@ -99,6 +100,30 @@ def read_user_input(prompt: str) -> str:
     except (KeyboardInterrupt, EOFError):
         sys.exit(0)
 
+def truncate_diff(diff: str, max_length: Optional[int] = None) -> str:
+    """Truncate the diff to a maximum length while keeping it readable."""
+    # Load config if max_length not provided
+    if max_length is None:
+        config = load_config()
+        max_length = config.get('max_diff_length', 6000)
+
+    if len(diff) <= max_length:
+        return diff
+    
+    # Split the diff into lines
+    lines = diff.split('\n')
+    total_length = 0
+    kept_lines = []
+    
+    for line in lines:
+        if total_length + len(line) + 1 > max_length - 100:  # Leave room for truncation message
+            break
+        kept_lines.append(line)
+        total_length += len(line) + 1  # +1 for newline
+    
+    truncation_message = "\n... [diff truncated due to length] ..."
+    return '\n'.join(kept_lines) + truncation_message
+
 def main():
     # Parse command line arguments
     auto_commit = False
@@ -170,7 +195,7 @@ Example good commits:
     # Generate commit message
     messages = [
         Message("system", system_prompt),
-        Message("user", f"Write commit message for the following git diff:\n\n```{diff}\n\n```")
+        Message("user", f"Write commit message for the following git diff (some parts might be truncated for length):\n\n```{truncate_diff(diff)}\n\n```")
     ]
 
     commit_message = client.chat_complete(messages)
