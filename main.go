@@ -34,20 +34,34 @@ func main() {
 		}
 	}
 
-	apiKey := os.Getenv("OPENAI_API_KEY")
+	apiKey := os.Getenv("LITELLM_API_KEY")
 	if apiKey == "" {
-		fmt.Println("OPENAI_API_KEY is not set")
+		fmt.Println("LITELLM_API_KEY is not set")
 		os.Exit(1)
 	}
 
 	model := os.Getenv("AI_COMMIT_MODEL")
 	if model == "" {
-		model = "gpt-3.5-turbo"
+		model = "bedrock/anthropic.claude-3-sonnet-20240229-v1:0"
 	}
 
 	systemPrompt := os.Getenv("AI_COMMIT_SYSTEM_PROMPT")
 	if systemPrompt == "" {
-		systemPrompt = `You are a GitCommitGPT-4, You will help user to write conventional commit message, commit message should be short (less than 100 chars), clean and meaningful, be careful on commit type. Only response the message. If you can not write the message, response empty.`
+		systemPrompt = `You are a Git Commit Assistant specialized in writing conventional commit messages. Follow these rules:
+1. Use conventional commit format: <type>(<scope>): <description>
+2. Types: feat, fix, docs, style, refactor, test, chore, perf
+3. Keep messages under 100 characters
+4. Use imperative mood (e.g., "add" not "added")
+5. Be specific but concise
+6. Focus on the "what" and "why", not the "how"
+7. Only respond with the commit message, nothing else
+8. If unable to generate a message, respond with empty string
+
+Example good commits:
+- feat(auth): add JWT token validation
+- fix(api): handle null response from user service
+- refactor(db): optimize query performance
+- docs(readme): update deployment instructions`
 	}
 
 	messages = []*Message{
@@ -185,8 +199,8 @@ func showHelp() {
 	fmt.Println("\t-a, --auto\t Auto stage all changes and commit, the changes could be split into multiple commits")
 
 	fmt.Println("\nEnvironment variables:")
-	fmt.Println("\tOPENAI_API_KEY\t OpenAI API key")
-	fmt.Println("\tAI_COMMIT_MODEL\t OpenAI model, default is gpt-3.5-turbo")
+	fmt.Println("\tLITELLM_API_KEY\t Litellm API key")
+	fmt.Println("\tAI_COMMIT_MODEL\t Litellm model, default is bedrock/anthropic.claude-3-sonnet-20240229-v1:0")
 	fmt.Println("\tAI_COMMIT_SYSTEM_PROMPT\t Default instruction for the assistant")
 
 	fmt.Println("\nFollow me on twitter: @duocdev")

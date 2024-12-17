@@ -28,7 +28,7 @@ type GptClient struct {
 	totalToken uint64
 }
 
-const chatEndpoint = "https://api.openai.com/v1/chat/completions"
+const chatEndpoint = "https://litellm.shared-services.adb.adi.tech/v1/chat/completions"
 
 func NewGptClient(apiKey string, model string) *GptClient {
 	return &GptClient{
@@ -66,6 +66,7 @@ func (c *GptClient) ChatComplete(ctx context.Context, messages []*Message) (stri
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+c.apiKey)
+	req.Header.Add("HTTP-Referer", "ai-commit-bedrock")
 
 	res, err := c.httpClient.Do(req)
 	if err != nil {
