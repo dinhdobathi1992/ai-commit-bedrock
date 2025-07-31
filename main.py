@@ -221,7 +221,8 @@ Example good commits:
         "🌟 Stellar work! Your commit is now among the stars!",
     ]
     print_success(random.choice(success_messages))
-    print_success(f"Total tokens used: {client.total_tokens}")
+    print_success(f"🤖 Model: {model}")
+    print_success(f"🎯 Tokens: {client.total_tokens} (prompt: {client.prompt_tokens}, completion: {client.completion_tokens})")
 
     if auto_push:
         if not push():

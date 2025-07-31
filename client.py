@@ -19,6 +19,8 @@ class LiteLLMClient:
         self.api_key = api_key
         self.model = model
         self.total_tokens = 0
+        self.prompt_tokens = 0
+        self.completion_tokens = 0
         
         # Load configuration
         config = load_config()
@@ -56,7 +58,14 @@ class LiteLLMClient:
             response.raise_for_status()
             
             data = response.json()
-            self.total_tokens += data.get("usage", {}).get("total_tokens", 0)
+            usage = data.get("usage", {})
+            prompt_tokens = usage.get("prompt_tokens", 0)
+            completion_tokens = usage.get("completion_tokens", 0)
+            total_tokens = usage.get("total_tokens", 0)
+            
+            self.prompt_tokens += prompt_tokens
+            self.completion_tokens += completion_tokens
+            self.total_tokens += total_tokens
             
             answer = data["choices"][0]["message"]["content"]
             return answer.strip().strip('"')
