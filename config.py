@@ -18,10 +18,10 @@ def load_config() -> Dict[str, Any]:
     # Default configuration (embedded in code as fallback)
     default_config = {
         "litellm_endpoint": "https://litellm.shared-services.adb.adi.tech/v1/chat/completions",
-        "default_model": "gpt-4o",
-        "max_diff_length": 6000,
-        "max_tokens": 500,
-        "temperature": 0.7
+        "default_model": "gpt-4o-mini",
+        "max_diff_length": 4000,
+        "max_tokens": 150,
+        "temperature": 0.3
     }
     
     # Try to load default config from file
