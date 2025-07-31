@@ -1,5 +1,5 @@
 {
-    "litellm_endpoint": "https://litellm.shared-services.adb.adi.tech/",
+    "litellm_endpoint": "https://litellm.shared-services.adb.adi.tech/v1/chat/completions",
     "default_model": "gpt-4o",
     "max_diff_length": 6000,
     "max_tokens": 500,
