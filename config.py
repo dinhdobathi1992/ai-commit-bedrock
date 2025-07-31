@@ -1,25 +1,40 @@
 import json
 import os
+import sys
 from typing import Dict, Any
+
+def get_resource_path(relative_path: str) -> str:
+    """Get absolute path to resource, works for development and PyInstaller bundle."""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    
+    return os.path.join(base_path, relative_path)
 
 def load_config() -> Dict[str, Any]:
     """Load configuration from config.json or fallback to default."""
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Default configuration (embedded in code as fallback)
+    default_config = {
+        "litellm_endpoint": "https://litellm.shared-services.adb.adi.tech/v1/chat/completions",
+        "default_model": "gpt-4o",
+        "max_diff_length": 6000,
+        "max_tokens": 500,
+        "temperature": 0.7
+    }
     
-    # Try to load user config
-    config_path = os.path.join(script_dir, 'config.json')
-    default_config_path = os.path.join(script_dir, 'config.default.json')
-    
-    # Load default config first
+    # Try to load default config from file
     try:
+        default_config_path = get_resource_path('config.default.json')
         with open(default_config_path, 'r') as f:
             config = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading default config: {e}")
-        return {}
-
-    # Override with user config if it exists
+        print(f"Warning: Could not load config.default.json ({e}), using embedded defaults")
+        config = default_config.copy()
+    
+    # Try to load user config from current directory
+    config_path = 'config.json'
     try:
         if os.path.exists(config_path):
             with open(config_path, 'r') as f:
